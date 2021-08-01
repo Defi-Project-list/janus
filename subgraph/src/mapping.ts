@@ -1,62 +1,14 @@
-import { BigInt } from "@graphprotocol/graph-ts"
-import {
-  Janus,
-  ChainlinkCancelled,
-  ChainlinkFulfilled,
-  ChainlinkRequested,
-  DataUpdated,
-  RequestFulfilled
-} from "../generated/Janus/Janus"
-import { ExampleEntity } from "../generated/schema"
+import { BigInt, Bytes, ByteArray } from "@graphprotocol/graph-ts"
 
-export function handleChainlinkCancelled(event: ChainlinkCancelled): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
+import { DataUpdated } from "../generated/Janus/Janus"
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (entity == null) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
+import { IdentityData } from "../generated/schema"
 
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
-  }
+export function handleDataUpdated(event: DataUpdated): void {
+  let identityData = new IdentityData(event.params._address.toHexString());
+  identityData.score = event.params._score;
+  identityData.metaData = event.params._metaData;
+  identityData.lastUpdated = event.params._lastUpdated;
 
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
-
-  // Entity fields can be set based on event parameters
-  entity.id = event.params.id.toString()
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract._postLikedByAddress(...)
-  // - contract.identityData(...)
-  // - contract.requestIdFulfilled(...)
-  // - contract.requestIdToAddress(...)
+  identityData.save()
 }
-
-export function handleChainlinkFulfilled(event: ChainlinkFulfilled): void {}
-
-export function handleChainlinkRequested(event: ChainlinkRequested): void {}
-
-export function handleDataUpdated(event: DataUpdated): void {}
-
-export function handleRequestFulfilled(event: RequestFulfilled): void {}

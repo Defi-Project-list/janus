@@ -1,5 +1,6 @@
-type ExampleEntity @entity {
+type IdentityData @entity {
   id: ID!
-  count: BigInt!
-  idx: Bytes! # bytes32
+  score: BigInt!
+  metaData: String!
+  lastUpdated: BigInt!
 }

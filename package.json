@@ -1,0 +1,30 @@
+{
+  "name": "janus",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^1.6.5",
+    "@emotion/react": "11",
+    "@emotion/styled": "11",
+    "@portis/web3": "^4.0.5",
+    "@walletconnect/web3-provider": "^1.5.2",
+    "critters": "^0.0.10",
+    "ethers": "^5.4.2",
+    "framer-motion": "4",
+    "next": "11.0.1",
+    "next-pwa": "^5.2.24",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "web3modal": "^1.9.3"
+  },
+  "devDependencies": {
+    "eslint": "7.31.0",
+    "eslint-config-next": "11.0.1"
+  }
+}

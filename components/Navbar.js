@@ -1,6 +1,6 @@
 import React from "react";
 import Link from 'next/link';
-import { Tooltip, Flex, IconButton, useColorMode, useColorModeValue, Text, Box } from "@chakra-ui/react";
+import { Tooltip, Flex, IconButton, useColorMode, useColorModeValue, Text } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 
 import { JanusIcon } from "@/public/icons";

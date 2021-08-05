@@ -44,8 +44,10 @@ export const Web3ContextProvider = ({children}) => {
       walletconnect: {
         package: WalletConnectProvider,
         options: {
-          infuraId: '9f34d0bf5e1b4b36914fd5bc66c50b05',
-        },
+          rpc: {
+              80001: "https://polygon-mumbai.g.alchemy.com/v2/qqQIm10pMOOsdmlV3p7NYIPt91bB0TL4"
+          }
+        }
       },
       portis: {
         display: {
@@ -60,7 +62,7 @@ export const Web3ContextProvider = ({children}) => {
     };
 
     let w3m = new Web3Modal({
-      network: "mainnet",
+      network: { chainId: 80001, nodeUrl: "https://polygon-mumbai.g.alchemy.com/v2/qqQIm10pMOOsdmlV3p7NYIPt91bB0TL4" },
       cacheProvider: true,
       theme: "dark",
       providerOptions,

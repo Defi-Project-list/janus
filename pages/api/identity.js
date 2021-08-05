@@ -7,7 +7,7 @@ async function calculateScore(address) {
     let tp = new ethers.providers.AlchemyProvider("mainnet","hHgRhUVdMTMcG3_gezsZSGAi_HoK43cA");
 
     let promiseArray = [
-        checkPoH(address),
+        checkPoH(address, tp),
         fetcher(`https://app.brightid.org/node/v5/verifications/Convo/${address.toLowerCase()}`, "GET", {}),
         fetcher(`https://api.poap.xyz/actions/scan/${address}`, "GET", {}),
         tp.lookupAddress(address),

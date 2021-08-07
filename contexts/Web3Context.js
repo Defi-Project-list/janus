@@ -56,7 +56,8 @@ export const Web3ContextProvider = ({children}) => {
         },
         package: Portis,
         options: {
-          id: "6e01a688-29cd-43a8-a36e-5dae5c474e97"
+          id: "6e01a688-29cd-43a8-a36e-5dae5c474e97",
+          network: "maticMumbai"
         }
       }
     };

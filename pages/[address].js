@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
@@ -7,12 +7,15 @@ import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalFooter, ModalHea
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import useSWR from 'swr';
 import QRCode from "react-qr-code";
+import { Web3Context } from "@/contexts/Web3Context";
+import { ethers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 
-import fetcher from '@/utils/fetcher';
+import fetcher from 'designsystem/utils/fetcher';
 import { VerifiedIcon } from '@/public/icons';
-import { prettifyNumber, truncateAddress } from '@/utils/stringUtils';
+import { prettifyNumber, truncateAddress } from 'designsystem/utils/stringUtils';
 import NavBar from '@/components/Navbar';
+import { janusContractAbi, janusContractAddress} from '@/lib/constants';
 
 const IdentitySection = () => {
 
@@ -22,8 +25,10 @@ const IdentitySection = () => {
     const [trustScoreData, setTrustScoreData] = useState(null);
     const [trustScore, setTrustScore] = useState("...");
 
+    const web3Context = useContext(Web3Context);
+    const { connectWallet, signerAddress, provider } = web3Context;
+
     useEffect(() => {
-        console.log(address, isAddress(address));
         if (isAddress(address) === true){
             fetcher(`/api/identity?address=${address}`).then((data)=>{
                 setTrustScore(data?.score?.toString());
@@ -31,6 +36,28 @@ const IdentitySection = () => {
             });
         }
     }, [address]);
+
+    async function tokenize(){
+      connectWallet();
+
+      const chainId = await ethereum.request({ method: 'eth_chainId' });
+      if (parseInt(chainId) !== 80001) {
+        alert("Switch network to Matic Mumbai Testnet");
+      }
+      else {
+        const signer = provider.getSigner();
+        console.log(janusContractAddress, janusContractAbi, signer);
+        let janus = new ethers.Contract(janusContractAddress, janusContractAbi, signer);
+        try {
+          let result = await janus.updateScoreManual(signerAddress);
+          console.log(result);
+          alert("Done!");
+        } catch (error) {
+          alert(error?.message);
+        }
+      }
+
+    }
 
     return (
         <Flex direction="column">
@@ -59,6 +86,7 @@ const IdentitySection = () => {
                             boxShadow: "2xl"
                         }}
                         cursor="pointer"
+                        alignItems="center"
                         justifyContent="center"
                         textAlign="center"
                     >
@@ -71,9 +99,15 @@ const IdentitySection = () => {
                         <br/>
                         Your Trust Score is {trustScore}
                         </Heading>
+                        <Button w="fit-content" variant="ghost" mt={2} onClick={tokenize}>
+                          Tokenize it
+                        </Button>
                     </Flex>
                 </Flex>
                 <Wrap spacing={1} display="flex" direction={{base:"column", md: "row"}} w="98%" justifyContent="center" alignItems="center">
+                    <WrapItem>
+                        <UnmarshalCard trustScoreData={trustScoreData} />
+                    </WrapItem>
                     <WrapItem>
                         <SybilCard trustScoreData={trustScoreData} />
                     </WrapItem>
@@ -125,6 +159,17 @@ const IdentitySection = () => {
 }
 
 export default IdentitySection;
+
+const UnmarshalCard = ({trustScoreData}) => {
+
+  return (
+    <IdentityCard image_url="/images/unmarshal.webp">
+      {
+        trustScoreData === null ? "Loading" : Boolean(trustScoreData.unmarshal) === false ? (<><chakra.p size="xs" as="a" target="_blank" href="https://unmarshal.io/">Discover on Unmarshal</chakra.p></>) : (<><Text mr={1}>Verified</Text><VerifiedIcon color="blue.400"/></>)
+      }
+    </IdentityCard>
+  );
+};
 
 const SybilCard = ({trustScoreData}) => {
 

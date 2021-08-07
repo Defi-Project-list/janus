@@ -4,7 +4,7 @@
 ```json
 {
   "80001": {
-    "Janus": "0x7BC40BFb2723C1d323F73a2ac23b09c5a175A4Ab"
+    "Janus": "0x3b9761887aC69E747072f281c30509B4bc78DA39"
   }
 }
 ```

@@ -1562,7 +1562,7 @@ contract Janus is ChainlinkClient {
         Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
 
         string memory reqApiAddress = string(abi.encodePacked(
-            "https://janus.anudit.dev/api?address=",
+            "https://janus.anudit.dev/api/identity?address=",
             toAsciiString(_add),
             "&apikey=CONVO"
         ));

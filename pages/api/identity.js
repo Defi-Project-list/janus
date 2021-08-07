@@ -1,7 +1,7 @@
 import { checkPoH, getMirrorData, checkUnstoppableDomains, getEthPrice, getFoundationData, getRaribleData, getSuperrareData, getKnownOriginData, getAsyncartData } from "@/lib/identity";
 import { ethers } from "ethers";
 import { isAddress } from 'ethers/lib/utils';
-import fetcher from '@/utils/fetcher';
+import fetcher from 'designsystem/utils/fetcher';
 
 async function calculateScore(address) {
     let tp = new ethers.providers.AlchemyProvider("mainnet","hHgRhUVdMTMcG3_gezsZSGAi_HoK43cA");
@@ -33,7 +33,8 @@ async function calculateScore(address) {
         getRaribleData(address), // * ethPrice
         getKnownOriginData(address), // * ethPrice
         getAsyncartData(address), // * ethPrice
-        getMirrorData(address)
+        getMirrorData(address),
+        fetcher(`https://stg-api.unmarshal.io/v1/bsc/address/${address}/nft-assets?auth_key=VGVtcEtleQ==`, "GET", {}),
     ];
 
     let results3 = await Promise.allSettled(promiseArray3);
@@ -44,6 +45,7 @@ async function calculateScore(address) {
     let score = 0;
     let retData = {
         'success': true,
+        'unmarshal': Boolean(results[17].value?.length)=== true ? results[17].value?.length : 0,
         'poh': results[0].value,
         'brightId': Boolean(results[1].value?.data?.unique),
         'poap': results[2].value?.length,

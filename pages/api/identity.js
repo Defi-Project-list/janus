@@ -1,7 +1,7 @@
 import { checkPoH, getMirrorData, checkUnstoppableDomains, getEthPrice, getFoundationData, getRaribleData, getSuperrareData, getKnownOriginData, getAsyncartData } from "@/lib/identity";
 import { ethers } from "ethers";
 import { isAddress } from 'ethers/lib/utils';
-import fetcher from 'designsystem/utils/fetcher';
+import fetcher from '@/utils/fetcher';
 
 async function calculateScore(address) {
     let tp = new ethers.providers.AlchemyProvider("mainnet","hHgRhUVdMTMcG3_gezsZSGAi_HoK43cA");

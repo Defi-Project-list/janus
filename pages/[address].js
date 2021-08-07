@@ -10,10 +10,11 @@ import QRCode from "react-qr-code";
 import { Web3Context } from "@/contexts/Web3Context";
 import { ethers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
+import { NFTStorage } from 'nft.storage'
 
-import fetcher from 'designsystem/utils/fetcher';
+import fetcher from '@/utils/fetcher';
 import { VerifiedIcon } from '@/public/icons';
-import { prettifyNumber, truncateAddress } from 'designsystem/utils/stringUtils';
+import { prettifyNumber, truncateAddress } from '@/utils/stringUtils';
 import NavBar from '@/components/Navbar';
 import { janusContractAbi, janusContractAddress} from '@/lib/constants';
 
@@ -38,23 +39,32 @@ const IdentitySection = () => {
     }, [address]);
 
     async function tokenize(){
-      connectWallet();
-
-      const chainId = await ethereum.request({ method: 'eth_chainId' });
-      if (parseInt(chainId) !== 80001) {
-        alert("Switch network to Matic Mumbai Testnet");
+      if (signerAddress == ""){
+        connectWallet();
       }
-      else {
-        const signer = provider.getSigner();
-        console.log(janusContractAddress, janusContractAbi, signer);
-        let janus = new ethers.Contract(janusContractAddress, janusContractAbi, signer);
-        try {
-          let result = await janus.updateScoreManual(signerAddress);
-          console.log(result);
-          alert("Done!");
-        } catch (error) {
-          alert(error?.message);
+
+      if (Boolean(provider?.isMetamask) === true) {
+        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+        if (parseInt(chainId) !== 80001) {
+          alert("Switch network to Matic Mumbai Testnet");
         }
+      }
+
+      const content = new Blob([JSON.stringify(trustScoreData)]);
+      const client = new NFTStorage({ token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGY3N0QyMGI4Y2E3QjNBMmRlNTk0QTMzMzg5MEJBOTY1MjFDQjRmRjgiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYyODMxODMyNzAyOSwibmFtZSI6ImphbnVzIn0.VpDJmlhxrajVM-25I1U_qkaQXn88ai0FBvpBGgeg34c" });
+      let cid = await client.storeBlob(content);
+      console.log('Backed up to Filecoin', cid);
+
+      console.log('provider', provider)
+      const signer = provider.getSigner();
+      console.log(janusContractAddress, janusContractAbi, signer);
+      let janus = new ethers.Contract(janusContractAddress, janusContractAbi, signer);
+      try {
+        let result = await janus.updateScoreManual(signerAddress);
+        console.log(result);
+        alert("Done!");
+      } catch (error) {
+        alert(error?.message);
       }
 
     }

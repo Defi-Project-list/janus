@@ -15,7 +15,7 @@
                 "public/*"
             ],
             "@/utils/*": [
-                "designsystem/utils/*"
+                "utils/*"
             ],
             "@/contexts/*": [
                 "contexts/*"

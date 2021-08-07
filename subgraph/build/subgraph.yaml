@@ -6,8 +6,8 @@ dataSources:
     name: Janus
     network: mumbai
     source:
-      address: "0x7BC40BFb2723C1d323F73a2ac23b09c5a175A4Ab"
-      startBlock: 17086557
+      address: "0x3b9761887aC69E747072f281c30509B4bc78DA39"
+      startBlock: 17326882
       abi: Janus
     mapping:
       kind: ethereum/events
@@ -17,8 +17,8 @@ dataSources:
         - IdentityData
       abis:
         - name: Janus
-          file: Janus\abis\Janus.json
+          file: Janus/abis/Janus.json
       eventHandlers:
         - event: DataUpdated(indexed address,uint256,string,uint256)
           handler: handleDataUpdated
-      file: Janus\Janus.wasm
+      file: Janus/Janus.wasm
